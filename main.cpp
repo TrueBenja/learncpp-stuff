@@ -1,38 +1,71 @@
 #include <iostream>
 #include <print>
-#include <cstdint>
-#include <cmath>
+#include "Random.h"
 
-void fizzbuzz(int max)
+bool playHiLo(int min, int max, int guesses)
 {
-    for (int i{1}; i <= max; ++i)
-    {
-        bool printed{false};
+    int answer{Random::get(min, max)};
 
-        if (i % 3 == 0)
+    for (int i{0}; i < guesses; ++i)
+    {
+        int guess{};
+        std::print("A random number between {} and {} is chosen. Guess which: ", min, max);
+        std::cin >> guess;
+
+        if (guess == answer)
         {
-            std::cout << "fizz";
-            printed = true;
+            std::println("Congrats! The answer was indeed {}.", answer);
+            return true;
         }
-        if (i % 5 == 0)
+        else if (guess < answer)
         {
-            std::cout << "buzz";
-            printed = true;
+            std::println("Your guess was too low!");
         }
-        if (i % 7 == 0)
+        else
         {
-            std::cout << "pop";
-            printed = true;
+            std::println("Your guess was too high!");
         }
-        if (!printed)
+    }
+    std::println("Too many guesses! The answer was {}.", answer);
+    return false;
+}
+
+bool playAgain()
+{
+    while (true)
+    {
+        char ch{};
+        std::print("Do you want to play again? (y/n) ");
+        std::cin >> ch;
+
+        switch (ch)
         {
-            std::cout << i;
+        case 'y':
+            return true;
+        case 'n':
+            return false;
+        default:
+            std::println("Invalid input! Try again.");
         }
-        std::cout << '\n';
     }
 }
 
 int main()
 {
-    fizzbuzz(150);
+    int min{};
+    int max{};
+
+    std::print("Enter the minimum number: ");
+    std::cin >> min;
+    std::print("Enter the maximum number: ");
+    std::cin >> max;
+
+    constexpr int tries{7};
+
+    do
+    {
+        playHiLo(min, max, tries);
+    } while (playAgain());
+
+    std::println("End of program.");
 }
